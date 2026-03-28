@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seed Engineering — Website Project Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --off-black: #111111;
+    --dark: #1a1a1a;
+    --border: #e6e3de;
+    --border-mid: #ccc9c3;
+    --muted: #8a8680;
+    --soft: #f4f2ef;
+    --softer: #faf9f7;
+    --white: #ffffff;
+    --accent: #c4a25e;
+    --accent-dark: #9e7e3e;
+    --text: #181818;
+    --text-sec: #52504d;
+    --text-ter: #8a8680;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--softer);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: var(--off-black);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(196,162,94,0.10) 0%, transparent 68%);
+    pointer-events: none;
+  }
+  .cover-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .cover-top-label { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: .12em; text-transform: uppercase; }
+  .cover-date { font-size: 11px; color: rgba(255,255,255,0.28); font-family: 'DM Mono', monospace; }
+
+  .cover-body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 5rem 0 3rem; }
+  .cover-eyebrow { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; font-family: 'DM Mono', monospace; }
+  .cover-title { font-size: clamp(34px, 5.5vw, 64px); font-weight: 300; line-height: 1.06; color: #fff; margin-bottom: 1.5rem; letter-spacing: -.02em; }
+  .cover-title strong { font-weight: 600; }
+  .cover-desc { font-size: 15px; color: rgba(255,255,255,0.45); max-width: 460px; line-height: 1.75; }
+
+  .cover-pills { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 2.5rem; }
+  .cover-pill { font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: .05em; padding: 5px 13px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.13); color: rgba(255,255,255,0.5); }
+  .cover-pill.gold { border-color: rgba(196,162,94,0.45); color: var(--accent); }
+
+  .cover-bottom { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.07); }
+  .cover-prepared { font-size: 12px; color: rgba(255,255,255,0.28); }
+  .cover-prepared span { color: rgba(255,255,255,0.55); }
+  .cover-inv { text-align: right; }
+  .cover-inv-label { font-size: 10px; color: rgba(255,255,255,0.28); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 4px; font-family: 'DM Mono', monospace; }
+  .cover-inv-val { font-size: 30px; font-weight: 300; color: var(--accent); letter-spacing: -.01em; }
+  .cover-inv-sub { font-size: 11px; color: rgba(255,255,255,0.28); margin-top: 3px; }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 900px; margin: 0 auto; padding: 4rem 2rem; }
+
+  /* ── SECTION ── */
+  .sec-block { padding: 3.5rem 0; border-bottom: 1px solid var(--border); }
+  .sec-block:last-child { border-bottom: none; }
+
+  .sec-header { display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 1.75rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .sec-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); min-width: 26px; padding-top: 4px; }
+  .sec-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: .4rem; font-family: 'DM Mono', monospace; }
+  .sec-title { font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: -.01em; }
+
+  p { color: var(--text-sec); font-size: 14.5px; line-height: 1.72; margin-bottom: .8rem; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── CARD ── */
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.35rem 1.5rem; margin-bottom: 12px; }
+  .card:last-child { margin-bottom: 0; }
+  .card-title { font-size: 13.5px; font-weight: 600; margin-bottom: .35rem; }
+  .card-body { font-size: 13px; color: var(--text-sec); line-height: 1.62; }
+  .card-dark { background: var(--off-black); border-color: transparent; }
+  .card-dark .card-title { color: #fff; }
+  .card-dark .card-body { color: rgba(255,255,255,0.52); }
+
+  /* ── GRIDS ── */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+
+  /* ── TECH BLOCK ── */
+  .tech-block { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .tech-hd { background: var(--dark); padding: .9rem 1.35rem; display: flex; justify-content: space-between; align-items: center; }
+  .tech-hd-name { font-size: 14px; font-weight: 500; color: #fff; }
+  .tech-hd-role { font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .tech-bd { padding: 1.1rem 1.35rem; }
+  .tech-desc { font-size: 13px; color: var(--text-sec); line-height: 1.6; margin-bottom: .85rem; }
+  .tech-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tech-tag { font-size: 11px; padding: 3px 9px; border-radius: 20px; background: var(--soft); color: var(--text-ter); font-family: 'DM Mono', monospace; }
+
+  /* ── WHY GRID ── */
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-top: 1.1rem; }
+  .why-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.15rem; background: var(--white); }
+  .why-title { font-size: 13px; font-weight: 600; margin-bottom: .3rem; }
+  .why-body { font-size: 12.5px; color: var(--text-sec); line-height: 1.58; }
+
+  /* ── MEP VISION ── */
+  .vision-wrap { background: var(--off-black); border-radius: var(--radius); padding: 1.75rem 2rem; margin-top: 1.25rem; }
+  .vision-item { display: flex; gap: 15px; padding: .9rem 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .vision-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .vision-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); min-width: 22px; padding-top: 2px; }
+  .vision-title { font-size: 13.5px; font-weight: 600; color: #fff; margin-bottom: .28rem; }
+  .vision-desc { font-size: 12.5px; color: rgba(255,255,255,0.52); line-height: 1.62; }
+
+  /* ── PAGES GRID ── */
+  .pages-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1.1rem; }
+  .pages-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.1rem 1.25rem; }
+  .pages-div { font-size: 10px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: .45rem; }
+  .pages-title { font-size: 13px; font-weight: 600; margin-bottom: .5rem; }
+  .pages-list { list-style: none; }
+  .pages-list li { font-size: 12.5px; color: var(--text-sec); padding: 2.5px 0; display: flex; gap: 8px; align-items: center; }
+  .pages-list li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--border-mid); flex-shrink: 0; }
+  .pages-note { font-size: 12px; color: var(--accent-dark); font-style: italic; margin-top: .6rem; padding-top: .6rem; border-top: 1px solid var(--border); }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; margin-top: 1rem; }
+  .timeline::before { content: ''; position: absolute; left: 15px; top: 18px; bottom: 18px; width: 1px; background: var(--border-mid); }
+  .tl-item { display: flex; gap: 1.75rem; margin-bottom: 1.5rem; }
+  .tl-item:last-child { margin-bottom: 0; }
+  .tl-left { min-width: 30px; display: flex; flex-direction: column; align-items: center; padding-top: 4px; }
+  .tl-dot { width: 13px; height: 13px; border-radius: 50%; background: var(--white); border: 2px solid var(--border-mid); flex-shrink: 0; z-index: 1; }
+  .tl-right { flex: 1; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.1rem 1.25rem; }
+  .tl-week { font-size: 10.5px; font-family: 'DM Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .28rem; }
+  .tl-task { font-size: 13.5px; font-weight: 600; margin-bottom: .35rem; }
+  .tl-desc { font-size: 13px; color: var(--text-sec); line-height: 1.6; }
+  .tl-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: .55rem; }
+  .tl-tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--soft); color: var(--text-ter); font-family: 'DM Mono', monospace; }
+
+  /* ── NEEDS ── */
+  .needs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-top: 1.1rem; }
+  .need-item { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.1rem; }
+  .need-when { font-size: 10px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .1em; color: var(--accent-dark); margin-bottom: .3rem; }
+  .need-cat { font-size: 13px; font-weight: 600; margin-bottom: .28rem; }
+  .need-desc { font-size: 12.5px; color: var(--text-sec); line-height: 1.55; }
+
+  /* ── INFRA ── */
+  .infra-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 1.1rem; }
+  .infra-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; text-align: center; }
+  .infra-label { font-size: 10px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: .38rem; }
+  .infra-val { font-size: 13.5px; font-weight: 600; }
+  .infra-sub { font-size: 11px; color: var(--text-ter); margin-top: 2px; }
+
+  /* ── GIT FLOW ── */
+  .git-wrap { background: var(--off-black); border-radius: var(--radius); padding: 1.6rem 1.85rem; }
+  .git-title { font-size: 13.5px; font-weight: 500; color: #fff; margin-bottom: 1.1rem; }
+  .git-row { display: flex; gap: 12px; align-items: center; padding: .55rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .git-row:last-child { border-bottom: none; }
+  .git-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .git-dot.main { background: var(--accent); }
+  .git-dot.dev { background: #6badf5; }
+  .git-dot.feat { background: #6ee7b7; }
+  .git-branch { font-family: 'DM Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.8); min-width: 76px; }
+  .git-desc { font-size: 12.5px; color: rgba(255,255,255,0.42); }
+
+  /* ── INVESTMENT ── */
+  .inv-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 12px; }
+  .inv-wrap:last-child { margin-bottom: 0; }
+  .inv-hd { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: var(--dark); }
+  .inv-name { font-size: 14px; font-weight: 500; color: #fff; }
+  .inv-price { font-size: 19px; font-weight: 300; color: var(--accent); font-family: 'DM Mono', monospace; }
+  .inv-bd { padding: 1.1rem 1.5rem; background: var(--white); }
+  .inv-items { display: flex; flex-wrap: wrap; gap: 7px; }
+  .inv-item { font-size: 12px; padding: 3px 10px; border-radius: 20px; background: var(--soft); color: var(--text-sec); }
+  .inv-note { font-size: 12px; color: var(--text-ter); margin-top: .7rem; font-style: italic; }
+
+  /* ── JOURNEY ── */
+  .journey-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 1.25rem; }
+  .journey-hd { background: var(--dark); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+  .journey-hd-title { font-size: 13px; font-weight: 500; color: #fff; }
+  .journey-hd-sub { font-size: 11px; font-family: 'DM Mono', monospace; color: rgba(255,255,255,0.35); }
+  .journey-body { padding: 1.75rem 1.25rem; overflow-x: auto; }
+  .journey-inner { min-width: 840px; }
+
+  /* ── FOOTER ── */
+  .footer { background: var(--off-black); color: rgba(255,255,255,.28); text-align: center; padding: 1.75rem 2rem; font-size: 11.5px; font-family: 'DM Mono', monospace; letter-spacing: .06em; }
+  .footer span { color: rgba(255,255,255,.5); }
+
+  @media (max-width: 680px) {
+    .cover { padding: 2rem 1.5rem; }
+    .cover-bottom { flex-direction: column; gap: 1rem; align-items: flex-start; }
+    .cover-inv { text-align: left; }
+    .g2, .g3, .g4, .why-grid, .pages-grid, .infra-row, .needs-grid { grid-template-columns: 1fr; }
+    .page { padding: 2.5rem 1.25rem; }
+  }
+  @media print {
+    .cover { min-height: auto; page-break-after: always; }
+    .sec-block { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-top">
+    <div class="cover-top-label">Website Project Plan</div>
+    <div class="cover-date">March 2026</div>
+  </div>
+
+  <div class="cover-body">
+    <div class="cover-eyebrow">Detailed Execution Plan</div>
+    <h1 class="cover-title">
+      <strong>Seed Engineering</strong><br>
+      Website Build &<br>Lead System
+    </h1>
+    <p class="cover-desc">A premium digital platform engineered to showcase MEP and Swimming Pool expertise in a way no competitor in the region currently does.</p>
+    <div class="cover-pills">
+      <div class="cover-pill gold">Next.js 14+ Frontend</div>
+      <div class="cover-pill gold">Sanity Headless CMS</div>
+      <div class="cover-pill">Custom Page Architecture</div>
+      <div class="cover-pill">Git Version Control</div>
+      <div class="cover-pill">VPS + Coolify</div>
+      <div class="cover-pill">4–5 Week Build</div>
+      <div class="cover-pill">English · Dubai, UAE</div>
+    </div>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="cover-prepared">Prepared for <span>Seed Engineering</span></div>
+    <div class="cover-prepared">April 2026 · Confidential</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="page">
+
+  <!-- 01 WHAT WE ARE BUILDING -->
+  <div class="sec-block">
+    <div class="sec-header">
+      <div class="sec-num">01</div>
+      <div>
+        <div class="sec-label">Overview</div>
+        <div class="sec-title">What we are building</div>
+      </div>
+    </div>
+    <p>Most MEP and pool contractor websites in the GCC look identical — a list of services, a stock photo, and a phone number. We are not building that.</p>
+    <p>Seed Engineering will have a high-performance web application that looks and feels closer to a technology company than a traditional contractor. Every design decision and technical choice is driven by two equally important goals: winning the right clients and making it easy for prospects to find you and reach out.</p>
+    <div class="g3" style="margin-top:1.25rem;">
+      <div class="card">
+        <div class="card-title">Lead generation</div>
+        <div class="card-body">Every service page has a purpose-built inquiry form. Leads are captured instantly, stored securely, and sent to your team via Telegram the moment someone submits.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Brand credibility</div>
+        <div class="card-body">Premium design, real project portfolios, and structured content position Seed Engineering as the expert contractor — not just another option in the market.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Online visibility</div>
+        <div class="card-body">Built with clean, fast, crawlable code so Google and other search engines can read and index every service page properly from day one.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 MEP VISION -->
+  <div class="sec-block">
+    <div class="sec-header">
+      <div class="sec-num">02</div>
+      <div>
+        <div class="sec-label">Design Direction</div>
+        <div class="sec-title">Reimagining how MEP is showcased</div>
+      </div>
+    </div>
+    <p>Most MEP companies in the region present themselves in the same traditional way. This is the opportunity to stand out. Here is the specific direction we will take for Seed Engineering.</p>
+    <div class="vision-wrap">
+      <div class="vision-item">
+        <div class="vision-num">01</div>
+        <div>
+          <div class="vision-title">Systems over services</div>
+          <div class="vision-desc">Instead of listing "HVAC, plumbing, electrical" as plain text, we present MEP as an integrated system — using visual layouts and structured breakdowns that communicate the depth of expertise behind the work.</div>
+        </div>
+      </div>
+      <div class="vision-item">
+        <div class="vision-num">02</div>
+        <div>
+          <div class="vision-title">Project-led storytelling</div>
+          <div class="vision-desc">Each portfolio entry is treated as a feature: scope, challenge, solution, outcome. Real project photos and real numbers. This builds trust that a service description never can.</div>
+        </div>
+      </div>
+      <div class="vision-item">
+        <div class="vision-num">03</div>
+        <div>
+          <div class="vision-title">Luxury-industrial aesthetic</div>
+          <div class="vision-desc">Dark surfaces, precise typography, and the visual restraint you see in high-end architecture firms. Your actual project photography and technical work become the visual identity of the brand.</div>
+        </div>
+      </div>
+      <div class="vision-item">
+        <div class="vision-num">04</div>
+        <div>
+          <div class="vision-title">Credibility at a glance</div>
+          <div class="vision-desc">Certifications, project scales, client sectors, and years in operation presented as structured, scannable information — not buried in paragraphs. A decision-maker can verify trust within seconds of landing on the site.</div>
+        </div>
+      </div>
+      <div class="vision-item">
+        <div class="vision-num">05</div>
+        <div>
+          <div class="vision-title">MEP + Pool as one unified brand</div>
+          <div class="vision-desc">Rather than two divisions that feel disconnected, the site positions Seed Engineering as a total built-environment specialist — the company that handles both the infrastructure and lifestyle elements of premium developments in the UAE.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 USER JOURNEY -->
+  <div class="sec-block">
+    <div class="sec-header">
+      <div class="sec-num">03</div>
+      <div>
+        <div class="sec-label">User Journey</div>
+        <div class="sec-title">How a visitor becomes a qualified lead</div>
+      </div>
+    </div>
+    <p>This diagram shows the complete path a potential client takes — from finding Seed Engineering online to your team receiving their project enquiry in real time. It also shows how your team keeps the site updated through Sanity CMS, and how the Git system keeps every code change safe and deployable.</p>
+
+    <div class="journey-wrap">
+      <div class="journey-hd">
+        <div class="journey-hd-title">Visitor → Lead journey &amp; system flow</div>
+        <div class="journey-hd-sub">Discovery · Site · Conversion · Backend · CMS &amp; Git</div>
+      </div>
+      <div class="journey-body">
+        <div class="journey-inner">
+          <svg width="100%" viewBox="0 0 960 560" xmlns="http://www.w3.org/2000/svg" style="font-family:'DM Sans',sans-serif; display:block;">
+            <defs>
+              <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M2 2L8 5L2 8" fill="none" stroke="#aca89f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </marker>
+              <marker id="ar-gold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M2 2L8 5L2 8" fill="none" stroke="#c4a25e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </marker>
+              <marker id="ar-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M2 2L8 5L2 8" fill="none" stroke="#93c5fd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </marker>
+              <marker id="ar-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M2 2L8 5L2 8" fill="none" stroke="#6ee7b7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </marker>
+            </defs>
+
+            <!-- ─── COLUMN LABELS ─── -->
+            <text x="84"  y="26" text-anchor="middle" font-size="9.5" font-family="'DM Mono',monospace" fill="#aaa" letter-spacing="1.2">DISCOVER</text>
+            <text x="250" y="26" text-anchor="middle" font-size="9.5" font-family="'DM Mono',monospace" fill="#aaa" letter-spacing="1.2">LAND</text>
+            <text x="452" y="26" text-anchor="middle" font-size="9.5" font-family="'DM Mono',monospace" fill="#aaa" letter-spacing="1.2">EXPLORE</text>
+            <text x="690" y="26" text-anchor="middle" font-size="9.5" font-family="'DM Mono',monospace" fill="#aaa" letter-spacing="1.2">CONVERT</text>
+            <text x="878" y="26" text-anchor="middle" font-size="9.5" font-family="'DM Mono',monospace" fill="#aaa" letter-spacing="1.2">NOTIFY</text>
+
+            <!-- column dividers -->
+            <line x1="166" y1="14" x2="166" y2="525" stroke="#e6e3de" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="334" y1="14" x2="334" y2="525" stroke="#e6e3de" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="570" y1="14" x2="570" y2="525" stroke="#e6e3de" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="808" y1="14" x2="808" y2="525" stroke="#e6e3de" stroke-width="1" stroke-dasharray="4 4"/>
+
+            <!-- ═══ ROW A — Google Search / MEP ═══ -->
+            <rect x="18" y="44" width="132" height="52" rx="7" fill="#1a1a1a"/>
+            <text x="84" y="66" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Google Search</text>
+            <text x="84" y="83" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,0.5)">"MEP contractor Dubai"</text>
+            <line x1="150" y1="70" x2="178" y2="70" stroke="#aca89f" stroke-width="1.5" marker-end="url(#ar)"/>
+
+            <rect x="180" y="44" width="116" height="52" rx="7" fill="#fff" stroke="#ccc9c3" stroke-width="1.5"/>
+            <text x="238" y="66" text-anchor="middle" font-size="12" font-weight="600" fill="#1a1a1a">Homepage</text>
+            <text x="238" y="83" text-anchor="middle" font-size="10.5" fill="#8a8680">MEP &amp; Pool overview</text>
+            <line x1="296" y1="70" x2="340" y2="70" stroke="#aca89f" stroke-width="1.5" marker-end="url(#ar)"/>
+
+            <rect x="342" y="44" width="130" height="52" rx="7" fill="#fff" stroke="#ccc9c3" stroke-width="1.5"/>
+            <text x="407" y="66" text-anchor="middle" font-size="12" font-weight="600" fill="#1a1a1a">MEP Service Page</text>
+            <text x="407" y="83" text-anchor="middle" font-size="10.5" fill="#8a8680">Commercial / HVAC / etc.</text>
+            <line x1="472" y1="70" x2="500" y2="70" stroke="#aca89f" stroke-width="1.5" marker-end="url(#ar)"/>
+
+            <rect x="502" y="44" width="118" height="52" rx="7" fill="#fff" stroke="#ccc9c3" stroke-width="1.5"/>
+            <text x="561" y="66" text-anchor="middle" font-size="12" font-weight="600" fill="#1a1a1a">Portfolio</text>
+            <text x="561" y="83" text-anchor="middle" font-size="10.5" fill="#8a8680">Project case studies</text>
+            <line x1="620" y1="70" x2="648" y2="70" stroke="#aca89f" stroke-width="1.5" marker-end="url(#ar)"/>
+
+            <!-- CONVERT box (shared) -->
+            <rect x="650" y="44" width="118" height="52" rx="7" fill="#c4a25e" stroke="#9e7e3e" stroke-width="1.5"/>
+            <text x="709" y="65" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Inquiry Form</text>
+            <text x="709" y="82" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,0.78)">Name · Phone · Project</text>
+            <line x1="768" y1="70" x2="810" y2="70" stroke="#c4a25e" stroke-width="2" marker-end="url(#ar-gold)"/>
+
+            <!-- NOTIFY box -->
+            <rect x="812" y="44" width="130" height="52" rx="7" fill="#1a1a1a"/>
+            <text x="877" y="65" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Lead Captured</text>
+            <text x="877" y="82" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,0.5)">DB + Telegram alert</text>
+
+            <!-- ═══ ROW B — Direct / Referral ═══ -->
+            <text x="84" y="138" text-anchor="middle" font-size="9" font-family="'DM Mono',monospace" fill="#c4a25e">ALT ENTRY</text>
+            <rect x="18" y="148" width="132" height="48" rx="7" fill="#f4f2ef" stroke="#ccc9c3" stroke-width="1.5"/>
+            <text x="84" y="169" text-anchor="middle" font-size="12" font-weight="600" fill="#1a1a1a">Direct / Referral</text>
+            <text x="84" y="185" text-anchor="middle" font-size="10.5" fill="#8a8680">WhatsApp · word of mouth</text>
+            <!-- joins to homepage -->
+            <path d="M84 148 L84 128 L238 128 L238 96" fill="none" stroke="#ccc9c3" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+
+            <!-- ═══ ROW C — Pool search ═══ -->
+            <rect x="18" y="220" width="132" height="48" rx="7" fill="#1a1a1a"/>
+            <text x="84" y="241" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Google Search</text>
+            <text x="84" y="257" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,0.5)">"pool contractor UAE"</text>
+            <line x1="150" y1="244" x2="178" y2="244" stroke="#aca89f" stroke-width="1.5" marker-end="url(#ar)"/>
+
+            <rect x="180" y="220" width="116" height="48" rx="7" fill="#fff" stroke="#ccc9c3" stroke-width="1.5"/>
+            <text x="238" y="241" text-anchor="middle" font-size="12" font-weight="600" fill="#1a1a1a">Pool Overview</text>
+            <text x="238" y="257" text-anchor="middle" font-size="10.5" fill="#8a8680">Pool landing page</text>
+            <line x1="296" y1="244" x2="340" y2="244" stroke="#aca89f" stroke-width="1.5" marker-end="url(#ar)"/>
+
+            <rect x="342" y="220" width="130" height="48" rx="7" fill="#fff" stroke="#ccc9c3" stroke-width="1.5"/>
+            <text x="407" y="241" text-anchor="middle" font-size="12" font-weight="600" fill="#1a1a1a">Pool Service Page</text>
+            <text x="407" y="257" text-anchor="middle" font-size="10.5" fill="#8a8680">Construction · Maintenance</text>
+            <!-- joins convert -->
+            <path d="M472 244 L709 244 L709 96" fill="none" stroke="#ccc9c3" stroke-width="1.5" marker-end="url(#ar)"/>
+
+            <!-- ═══ BACKEND FLOW ═══ -->
+            <text x="709" y="138" text-anchor="middle" font-size="9" font-family="'DM Mono',monospace" fill="#c4a25e">BACKEND</text>
+
+            <rect x="648" y="148" width="118" height="48" rx="7" fill="#f4f2ef" stroke="#ccc9c3" stroke-width="1.5"/>
+            <text x="707" y="169" text-anchor="middle" font-size="12" font-weight="600" fill="#1a1a1a">Lead Database</text>
+            <text x="707" y="185" text-anchor="middle" font-size="10.5" fill="#8a8680">Stored on VPS</text>
+
+            <rect x="812" y="148" width="130" height="48" rx="7" fill="#f4f2ef" stroke="#ccc9c3" stroke-width="1.5"/>
+            <text x="877" y="169" text-anchor="middle" font-size="12" font-weight="600" fill="#1a1a1a">Telegram Alert</text>
+            <text x="877" y="185" text-anchor="middle" font-size="10.5" fill="#8a8680">Instant notification</text>
+
+            <!-- Lead captured → DB and Telegram -->
+            <path d="M877 96 L877 128 L707 128 L707 148" fill="none" stroke="#c4a25e" stroke-width="1.5" marker-end="url(#ar-gold)"/>
+            <path d="M942 96 L942 148" fill="none" stroke="#c4a25e" stroke-width="1.5" marker-end="url(#ar-gold)"/>
+
+            <!-- Sales team response -->
+            <text x="877" y="230" text-anchor="middle" font-size="9" font-family="'DM Mono',monospace" fill="#c4a25e">RESPONSE</text>
+            <rect x="812" y="240" width="130" height="48" rx="7" fill="#1a1a1a"/>
+            <text x="877" y="261" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Sales Team Calls</text>
+            <text x="877" y="277" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,0.5)">Lead still on the site</text>
+            <path d="M877 196 L877 240" fill="none" stroke="#c4a25e" stroke-width="1.5" marker-end="url(#ar-gold)"/>
+
+            <!-- ═══ CMS FLOW ═══ -->
+            <line x1="0" y1="322" x2="960" y2="322" stroke="#e6e3de" stroke-width="1"/>
+            <text x="84" y="342" text-anchor="middle" font-size="9" font-family="'DM Mono',monospace" fill="#6badf5" letter-spacing="1">CMS UPDATES</text>
+
+            <rect x="18" y="352" width="132" height="48" rx="7" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+            <text x="84" y="373" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Sanity CMS</text>
+            <text x="84" y="389" text-anchor="middle" font-size="10.5" fill="#3b82f6">Your team edits content</text>
+            <line x1="150" y1="376" x2="178" y2="376" stroke="#93c5fd" stroke-width="1.5" marker-end="url(#ar-blue)"/>
+
+            <rect x="180" y="352" width="116" height="48" rx="7" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+            <text x="238" y="373" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Next.js API</text>
+            <text x="238" y="389" text-anchor="middle" font-size="10.5" fill="#3b82f6">Fetches latest content</text>
+            <line x1="296" y1="376" x2="340" y2="376" stroke="#93c5fd" stroke-width="1.5" marker-end="url(#ar-blue)"/>
+
+            <rect x="342" y="352" width="130" height="48" rx="7" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+            <text x="407" y="373" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Live Site Updates</text>
+            <text x="407" y="389" text-anchor="middle" font-size="10.5" fill="#3b82f6">No code change needed</text>
+
+            <!-- CMS note arrow to service pages above -->
+            <path d="M407 352 L407 310 L407 280 L407 268" fill="none" stroke="#93c5fd" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#ar-blue)"/>
+
+            <!-- ═══ GIT FLOW ═══ -->
+            <text x="709" y="342" text-anchor="middle" font-size="9" font-family="'DM Mono',monospace" fill="#6ee7b7" letter-spacing="1">GIT DEPLOY FLOW</text>
+
+            <rect x="576" y="352" width="132" height="48" rx="7" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+            <text x="642" y="373" text-anchor="middle" font-size="12" font-weight="600" fill="#065f46">Git Repository</text>
+            <text x="642" y="389" text-anchor="middle" font-size="10.5" fill="#059669">Code + full history</text>
+            <line x1="708" y1="376" x2="736" y2="376" stroke="#6ee7b7" stroke-width="1.5" marker-end="url(#ar-green)"/>
+
+            <rect x="738" y="352" width="100" height="48" rx="7" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+            <text x="788" y="373" text-anchor="middle" font-size="12" font-weight="600" fill="#065f46">Coolify</text>
+            <text x="788" y="389" text-anchor="middle" font-size="10.5" fill="#059669">Auto-deploy to VPS</text>
+            <line x1="838" y1="376" x2="866" y2="376" stroke="#6ee7b7" stroke-width="1.5" marker-end="url(#ar-green)"/>
+
+            <rect x="868" y="352" width="74" height="48" rx="7" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+            <text x="905" y="373" text-anchor="middle" font-size="12" font-weight="600" fill="#065f46">Live</text>
+            <text x="905" y="389" text-anchor="middle" font-size="10.5" fill="#059669">Site updated</text>
+
+            <!-- ═══ LEGEND ═══ -->
+            <line x1="0" y1="428" x2="960" y2="428" stroke="#e6e3de" stroke-width="1"/>
+            <text x="18" y="448" font-size="9.5" font-family="'DM Mono',monospace" fill="#aaa">LEGEND</text>
+
+            <rect x="80"  y="436" width="13" height="13" rx="3" fill="#1a1a1a"/>
+            <text x="100" y="447" font-size="10.5" fill="#666">Discovery / entry point</text>
+
+            <rect x="230" y="436" width="13" height="13" rx="3" fill="#fff" stroke="#ccc9c3" stroke-width="1.5"/>
+            <text x="250" y="447" font-size="10.5" fill="#666">Website pages</text>
+
+            <rect x="360" y="436" width="13" height="13" rx="3" fill="#c4a25e"/>
+            <text x="380" y="447" font-size="10.5" fill="#666">Conversion moment</text>
+
+            <rect x="510" y="436" width="13" height="13" rx="3" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+            <text x="530" y="447" font-size="10.5" fill="#666">CMS content flow</text>
+
+            <rect x="660" y="436" width="13" height="13" rx="3" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+            <text x="680" y="447" font-size="10.5" fill="#666">Git deploy flow</text>
+
+            <rect x="790" y="436" width="13" height="13" rx="3" fill="#f4f2ef" stroke="#ccc9c3" stroke-width="1.5"/>
+            <text x="810" y="447" font-size="10.5" fill="#666">Backend / database</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-top:1rem;">
+      <div class="card">
+        <div class="card-title">Two ways a visitor finds Seed Engineering</div>
+        <div class="card-body">Google organic search for MEP or Pool services, and direct or referral traffic from word of mouth, WhatsApp links, or business cards. Both paths lead into the same conversion funnel.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">The moment that matters</div>
+        <div class="card-body">When a visitor submits an inquiry, the lead is stored in your private database and a Telegram notification fires to your team — while the prospect is still on the site and ready to talk.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 TECH STACK -->
+  <div class="sec-block">
+    <div class="sec-header">
+      <div class="sec-num">04</div>
+      <div>
+        <div class="sec-label">Technology Stack</div>
+        <div class="sec-title">Next.js frontend + Sanity headless CMS</div>
+      </div>
+    </div>
+    <p>These two technologies are the industry standard for premium, content-rich websites that need to be fast, easily managed, and built to last without expensive rebuilds.</p>
+
+    <div class="g3" style="margin-top:1.25rem; margin-bottom:1.5rem;">
+      <div class="tech-block">
+        <div class="tech-hd">
+          <div class="tech-hd-name">Next.js 14+</div>
+          <div class="tech-hd-role">Frontend</div>
+        </div>
+        <div class="tech-bd">
+          <div class="tech-desc">The React framework used by companies like Vercel and Notion. Handles everything the visitor sees — pages, routing, animations, and performance.</div>
+          <div class="tech-tags">
+            <span class="tech-tag">Fast rendering</span>
+            <span class="tech-tag">Clean HTML</span>
+            <span class="tech-tag">Mobile-first</span>
+          </div>
+        </div>
+      </div>
+      <div class="tech-block">
+        <div class="tech-hd">
+          <div class="tech-hd-name">Sanity CMS</div>
+          <div class="tech-hd-role">Backend / CMS</div>
+        </div>
+        <div class="tech-bd">
+          <div class="tech-desc">Headless content management. Your team updates projects, services, and content through a clean dashboard — without touching any code.</div>
+          <div class="tech-tags">
+            <span class="tech-tag">Headless API</span>
+            <span class="tech-tag">Real-time</span>
+            <span class="tech-tag">Free tier</span>
+          </div>
+        </div>
+      </div>
+      <div class="tech-block">
+        <div class="tech-hd">
+          <div class="tech-hd-name">VPS + Coolify</div>
+          <div class="tech-hd-role">Infrastructure</div>
+        </div>
+        <div class="tech-bd">
+          <div class="tech-desc">Deployed on a VPS using the Coolify panel. Clean UI to manage the app, SSL, and deployments — no manual server commands needed.</div>
+          <div class="tech-tags">
+            <span class="tech-tag">Auto SSL</span>
+            <span class="tech-tag">Git deploy</span>
+            <span class="tech-tag">Zero downtime</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1.5rem;">
+      <div style="font-size:14px; font-weight:600; margin-bottom:.75rem;">Why Next.js — explained simply</div>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-title">Pages load in under a second</div>
+          <div class="why-body">Next.js pre-builds pages on the server before anyone visits. The result is near-instant loading — which keeps visitors on the site and reduces bounce rate significantly.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-title">Clean HTML search engines can read</div>
+          <div class="why-body">Unlike standard React apps, Next.js sends fully rendered HTML to the browser. Google and Bing can index every word on every service page without any issues.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-title">Secure and stable</div>
+          <div class="why-body">The architecture separates the frontend from the backend cleanly. There is no direct database exposure to the web, which removes the most common attack vectors found in traditional CMS platforms.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-title">Built to expand</div>
+          <div class="why-body">Adding new service pages or updating content as the business grows means adding CMS entries — not rebuilding the site. The foundation supports long-term expansion cleanly.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:14px; font-weight:600; margin-bottom:.75rem;">What "headless CMS" means for your team</div>
+    <div class="card" style="margin-bottom:12px;">
+      <div class="card-title">Sanity CMS — no code needed to manage content</div>
+      <div class="card-body">A traditional CMS bundles the website design and the content editing together. Change something wrong and you can break the layout. Sanity is headless — the content lives separately in a secure dashboard, and Next.js pulls it in automatically. Your team can update a project photo, change a service description, or add a new portfolio entry through a simple interface with no risk of affecting the site design.</div>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-title">Changes go live in seconds</div>
+        <div class="why-body">Updates made in the Sanity dashboard appear on the live site almost immediately. No deployment, no developer needed for routine content changes.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-title">Structured project records</div>
+        <div class="why-body">Projects, services, and team profiles are modelled as structured data — not unformatted paragraphs. This keeps the site consistent and well-organised automatically.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-title">No CMS subscription cost</div>
+        <div class="why-body">Sanity's free tier fully covers a site of this size. There is no additional CMS licence fee on top of the project investment.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-title">Feeds the lead forms cleanly</div>
+        <div class="why-body">The same content API handles form submissions, routing them to the database and Telegram webhook from a single integrated backend.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 GIT + HOSTING -->
+  <div class="sec-block">
+    <div class="sec-header">
+      <div class="sec-num">05</div>
+      <div>
+        <div class="sec-label">Version Control &amp; Hosting</div>
+        <div class="sec-title">Git-controlled · VPS-hosted · 6 months free</div>
+      </div>
+    </div>
+    <p>The entire codebase is managed with Git — the version control system used by every professional software team worldwide. Every change is tracked, reversible, and safe.</p>
+
+    <div class="g2" style="margin-top:1.25rem; margin-bottom:1.25rem;">
+      <div class="git-wrap">
+        <div class="git-title">Git branch structure</div>
+        <div class="git-row">
+          <div class="git-dot main"></div>
+          <div class="git-branch">main</div>
+          <div class="git-desc">Live production site — only stable, tested code goes here</div>
+        </div>
+        <div class="git-row">
+          <div class="git-dot dev"></div>
+          <div class="git-branch">dev</div>
+          <div class="git-desc">Active development — all features tested here first</div>
+        </div>
+        <div class="git-row">
+          <div class="git-dot feat"></div>
+          <div class="git-branch">feature/*</div>
+          <div class="git-desc">Individual features built in isolation, then merged in</div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:11px;">
+        <div class="card">
+          <div class="card-title">Full change history</div>
+          <div class="card-body">Every change to the codebase is logged with what changed and when. If something breaks, any previous version of the site can be restored instantly.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Automatic deploys via Coolify</div>
+          <div class="card-body">When code is pushed to the main branch, Coolify automatically builds and deploys the update to the live server. No manual intervention required.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="infra-row">
+      <div class="infra-card">
+        <div class="infra-label">Hosting</div>
+        <div class="infra-val">Provided VPS</div>
+        <div class="infra-sub">Free for 6 months</div>
+      </div>
+      <div class="infra-card">
+        <div class="infra-label">Panel</div>
+        <div class="infra-val">Coolify</div>
+        <div class="infra-sub">One-click deploys</div>
+      </div>
+      <div class="infra-card">
+        <div class="infra-label">SSL</div>
+        <div class="infra-val">Auto</div>
+        <div class="infra-sub">Let's Encrypt</div>
+      </div>
+      <div class="infra-card">
+        <div class="infra-label">Domain</div>
+        <div class="infra-val">Existing</div>
+        <div class="infra-sub">DNS update only</div>
+      </div>
+    </div>
+
+    <div class="card card-dark" style="margin-top:12px;">
+      <div class="card-title">Hosting — first 6 months free, then purchased by client</div>
+      <div class="card-body">VPS hosting is provided at no charge for the first 6 months from launch. After month 6, Seed Engineering purchases and manages their own VPS hosting directly. We will provide full guidance on recommended hosting options and handle the migration seamlessly when the time comes. The optional 799 AED/month maintenance plan covers framework updates, security patches, and backend upkeep — but does not include hosting after month 6.</div>
+    </div>
+  </div>
+
+  <!-- 06 PAGE ARCHITECTURE -->
+  <div class="sec-block">
+    <div class="sec-header">
+      <div class="sec-num">06</div>
+      <div>
+        <div class="sec-label">Site Architecture</div>
+        <div class="sec-title">Page structure — built around your requirements</div>
+      </div>
+    </div>
+    <p>The page count and structure below is based on the initial scope discussion. Final pages are confirmed with Seed Engineering during Week 1 — the exact structure is adjusted to match your services, divisions, and priorities.</p>
+
+    <div class="pages-grid">
+      <div class="pages-card">
+        <div class="pages-div">Core · ~5 pages</div>
+        <div class="pages-title">Site foundation</div>
+        <ul class="pages-list">
+          <li>Homepage</li>
+          <li>About Seed Engineering</li>
+          <li>Contact</li>
+          <li>Careers (placeholder)</li>
+          <li>Privacy Policy</li>
+        </ul>
+        <div class="pages-note">Exact pages confirmed in Week 1 kickoff</div>
+      </div>
+      <div class="pages-card">
+        <div class="pages-div">MEP Division · ~7 pages</div>
+        <div class="pages-title">MEP services</div>
+        <ul class="pages-list">
+          <li>MEP Overview</li>
+          <li>Commercial MEP</li>
+          <li>Residential MEP</li>
+          <li>HVAC Systems</li>
+          <li>Electrical &amp; Plumbing</li>
+          <li>MEP Maintenance</li>
+          <li>MEP Project Portfolio</li>
+        </ul>
+        <div class="pages-note">Adjusted to match actual service offering</div>
+      </div>
+      <div class="pages-card">
+        <div class="pages-div">Pool Division · ~5 pages</div>
+        <div class="pages-title">Swimming pool services</div>
+        <ul class="pages-list">
+          <li>Pool Overview</li>
+          <li>Pool Construction</li>
+          <li>Pool Renovation</li>
+          <li>Pool Maintenance</li>
+          <li>Pool Project Portfolio</li>
+        </ul>
+        <div class="pages-note">Adjusted to match actual service offering</div>
+      </div>
+      <div class="pages-card">
+        <div class="pages-div">Supporting · ~3 pages</div>
+        <div class="pages-title">Conversion &amp; trust</div>
+        <ul class="pages-list">
+          <li>Why Seed Engineering</li>
+          <li>Project Inquiry (dedicated)</li>
+          <li>Resources / Blog Index</li>
+        </ul>
+        <div class="pages-note">Can be removed or swapped per client preference</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div class="card-title">Total: up to 20 pages</div>
+      <div class="card-body">The final page list is agreed with Seed Engineering in Week 1. Pages can be added, removed, or repurposed based on the actual services and structure you want — the 20-page budget is the ceiling, not a fixed requirement.</div>
+    </div>
+  </div>
+
+  <!-- 07 LEAD SYSTEM -->
+  <div class="sec-block">
+    <div class="sec-header">
+      <div class="sec-num">07</div>
+      <div>
+        <div class="sec-label">Lead Capture System</div>
+        <div class="sec-title">How the backend captures and routes leads</div>
+      </div>
+    </div>
+    <p>The site acts as an active lead generation tool. Every service page has a context-specific inquiry form. When someone submits, two things happen at the same time.</p>
+    <div class="g3" style="margin-top:1.25rem;">
+      <div class="card">
+        <div class="card-title">Secure lead database</div>
+        <div class="card-body">All lead data — name, phone number, service requested, message, timestamp, and source page — is stored in a private database on the VPS. Accessible via a simple admin view.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Instant Telegram alert</div>
+        <div class="card-body">A formatted notification fires to your Telegram channel the moment a form is submitted. Your team sees full prospect details and can call while they are still browsing.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Context-aware forms</div>
+        <div class="card-body">Each form is labelled by service type — so your team knows whether it is a pool construction enquiry or a commercial MEP project before the call, with no need to ask again.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 08 TIMELINE -->
+  <div class="sec-block">
+    <div class="sec-header">
+      <div class="sec-num">08</div>
+      <div>
+        <div class="sec-label">Timeline</div>
+        <div class="sec-title">4–5 week build schedule</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div></div>
+        <div class="tl-right">
+          <div class="tl-week">Week 1</div>
+          <div class="tl-task">Discovery, page structure &amp; content collection</div>
+          <div class="tl-desc">Finalise page architecture with Seed Engineering. Collect brand assets and raw content. Define Sanity CMS schemas. Deliver UI/UX mockups for Homepage, MEP, and Pool pages for approval before build begins.</div>
+          <div class="tl-tags"><span class="tl-tag">Page plan confirmed</span><span class="tl-tag">Brand assets</span><span class="tl-tag">Mockups</span><span class="tl-tag">CMS schema</span></div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div></div>
+        <div class="tl-right">
+          <div class="tl-week">Week 2–3</div>
+          <div class="tl-task">Core build — frontend + CMS integration</div>
+          <div class="tl-desc">Next.js codebase built and deployed to staging. All pages constructed. Sanity CMS connected via API. Portfolio and service content loaded. Mobile-first layout and responsiveness implemented throughout.</div>
+          <div class="tl-tags"><span class="tl-tag">All pages live (staging)</span><span class="tl-tag">Sanity connected</span><span class="tl-tag">Content loaded</span></div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div></div>
+        <div class="tl-right">
+          <div class="tl-week">Week 4</div>
+          <div class="tl-task">Lead system, forms &amp; webhook integration</div>
+          <div class="tl-desc">All inquiry forms built and connected. Backend database configured. Telegram webhook set up and tested end-to-end. Form submissions confirmed working across all service pages.</div>
+          <div class="tl-tags"><span class="tl-tag">Lead forms live</span><span class="tl-tag">Database active</span><span class="tl-tag">Telegram tested</span></div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div></div>
+        <div class="tl-right">
+          <div class="tl-week">Week 5</div>
+          <div class="tl-task">QA, speed testing &amp; live launch</div>
+          <div class="tl-desc">Mobile and tablet testing across devices. Performance and speed audit. DNS cutover to connect existing domain to the new server. SSL confirmed. Final content sign-off. Official live launch.</div>
+          <div class="tl-tags"><span class="tl-tag">Mobile QA</span><span class="tl-tag">Speed check</span><span class="tl-tag">DNS connected</span><span class="tl-tag">Launch</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09 WHAT WE NEED -->
+  <div class="sec-block">
+    <div class="sec-header">
+      <div class="sec-num">09</div>
+      <div>
+        <div class="sec-label">Requirements</div>
+        <div class="sec-title">What we need from Seed Engineering</div>
+      </div>
+    </div>
+    <p>The quality of the final site depends directly on the assets and content provided. Everything below is needed before or during the build window specified.</p>
+    <div class="needs-grid">
+      <div class="need-item">
+        <div class="need-when">Week 1 — Required first</div>
+        <div class="need-cat">Brand assets</div>
+        <div class="need-desc">Logo files (SVG or high-res PNG), brand colours (hex codes if known), and any existing fonts or brand guidelines.</div>
+      </div>
+      <div class="need-item">
+        <div class="need-when">Week 1 — Required first</div>
+        <div class="need-cat">Company information</div>
+        <div class="need-desc">Year founded, number of engineers, certifications held, areas served, and a brief company background.</div>
+      </div>
+      <div class="need-item">
+        <div class="need-when">Week 1–2</div>
+        <div class="need-cat">Service descriptions</div>
+        <div class="need-desc">Bullet points or rough notes for each service under MEP and Pool. We professionally write and format the final copy.</div>
+      </div>
+      <div class="need-item">
+        <div class="need-when">Week 2 — High priority</div>
+        <div class="need-cat">Project portfolio</div>
+        <div class="need-desc">3–8 completed projects with project name, client sector, location, scope or size, and high-resolution photos. This section has the biggest impact on how impressive the site looks.</div>
+      </div>
+      <div class="need-item">
+        <div class="need-when">Week 4</div>
+        <div class="need-cat">Telegram setup</div>
+        <div class="need-desc">The Telegram number or group where lead notifications should be delivered. We configure the webhook on our end.</div>
+      </div>
+      <div class="need-item">
+        <div class="need-when">Week 5 — Launch</div>
+        <div class="need-cat">Domain DNS access</div>
+        <div class="need-desc">Access to domain registrar or DNS panel to point the existing domain to the new server at launch. This takes under an hour and we guide you through it.</div>
+      </div>
+      <div class="need-item">
+        <div class="need-when">Ongoing</div>
+        <div class="need-cat">Single point of contact</div>
+        <div class="need-desc">One designated contact for design approvals and content sign-off. Timely feedback keeps the project on schedule.</div>
+      </div>
+      <div class="need-item">
+        <div class="need-when">Post month 6</div>
+        <div class="need-cat">VPS hosting (client-purchased)</div>
+        <div class="need-desc">After the free 6-month period, Seed Engineering purchases their own VPS plan. We provide hosting recommendations and handle migration with no downtime.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10 INVESTMENT -->
+  <div class="sec-block">
+    <div class="sec-header">
+      <div class="sec-num">10</div>
+      <div>
+        <div class="sec-label">Investment</div>
+        <div class="sec-title">Pricing &amp; payment terms</div>
+      </div>
+    </div>
+
+    <div class="inv-wrap">
+      <div class="inv-hd">
+        <div class="inv-name">Phase 1 — Complete build &amp; launch</div>
+        <div class="inv-price">7,000 AED</div>
+      </div>
+      <div class="inv-bd">
+        <div class="inv-items">
+          <span class="inv-item">Custom Next.js website (up to 20 pages)</span>
+          <span class="inv-item">Sanity CMS setup &amp; configuration</span>
+          <span class="inv-item">Content writing &amp; formatting</span>
+          <span class="inv-item">Mobile-first responsive design</span>
+          <span class="inv-item">Lead capture forms</span>
+          <span class="inv-item">Backend lead database</span>
+          <span class="inv-item">Telegram webhook alerts</span>
+          <span class="inv-item">Git version control</span>
+          <span class="inv-item">Coolify deployment setup</span>
+          <span class="inv-item">SSL certificate</span>
+          <span class="inv-item">Domain DNS connection</span>
+          <span class="inv-item">6 months VPS hosting (free)</span>
+        </div>
+
+        <!-- Payment terms -->
+        <div style="margin-top:1.1rem; border-top:1px solid var(--border); padding-top:1.1rem;">
+          <div style="font-size:12px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin-bottom:.75rem;">Payment Schedule</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div style="background:var(--soft); border-radius:var(--radius-sm); padding:1rem 1.1rem; border:1px solid var(--border);">
+              <div style="font-size:10px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:.1em; color:var(--accent-dark); margin-bottom:.35rem;">To commence project</div>
+              <div style="font-size:22px; font-weight:300; color:var(--dark); letter-spacing:-.01em;">30%</div>
+              <div style="font-size:12px; color:var(--text-sec); margin-top:.25rem;">Advance payment — due before work begins</div>
+            </div>
+            <div style="background:var(--soft); border-radius:var(--radius-sm); padding:1rem 1.1rem; border:1px solid var(--border);">
+              <div style="font-size:10px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:.1em; color:var(--accent-dark); margin-bottom:.35rem;">Upon project completion</div>
+              <div style="font-size:22px; font-weight:300; color:var(--dark); letter-spacing:-.01em;">70%</div>
+              <div style="font-size:12px; color:var(--text-sec); margin-top:.25rem;">Final payment — due before live launch</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="inv-note" style="margin-top:.85rem;">VPS hosting is provided free for the first 6 months. From month 7, Seed Engineering purchases hosting directly. We assist with the transition at no extra cost.</div>
+      </div>
+    </div>
+
+    <div class="inv-wrap">
+      <div class="inv-hd">
+        <div class="inv-name">Optional — Monthly maintenance (from month 2)</div>
+        <div class="inv-price">799 AED/mo</div>
+      </div>
+      <div class="inv-bd">
+        <div class="inv-items">
+          <span class="inv-item">Next.js framework updates</span>
+          <span class="inv-item">Security patches</span>
+          <span class="inv-item">Backend database upkeep</span>
+          <span class="inv-item">CMS content support</span>
+          <span class="inv-item">Uptime monitoring</span>
+        </div>
+        <div class="inv-note">Does not include VPS hosting cost after month 6. Hosting is purchased and managed directly by Seed Engineering.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Prepared for <span>Seed Engineering</span> · April 2026 · Confidential
+</div>
+
+</body>
+</html>
